@@ -61,6 +61,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
                 PlayerId INTEGER PRIMARY KEY,
                 FirstName CHAR(50) NOT NULL,
                 LastName CHAR(50) NOT NULL,
+                Place INTEGER NOT NULL,
                 DeckId INTEGER NOT NULL,
                 FOREIGN KEY (DeckId) REFERENCES Decks(DeckId)
             );
@@ -74,7 +75,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
         String sqlCommand = """
             CREATE TABLE IF NOT EXISTS Decks (
                 DeckId INTEGER PRIMARY KEY,
-                PercentOfMetaGame INTEGER NOT NULL,
+                PercentOfMetagame INTEGER NOT NULL,
                 Archetype CHAR(50) NOT NULL,
             );
         """;
@@ -88,8 +89,8 @@ public static Connection createDatabase(String databaseName) throws SQLException
             CREATE TABLE IF NOT EXISTS Cards (
                 CardId INTEGER PRIMARY KEY,
                 Name CHAR(50) NOT NULL,
-                Color CHAR(50) NOT NULL,
-                ManaValue INTEGER NOT NULL
+                ManaValue INTEGER NOT NULL,
+                Color CHAR(50) NOT NULL
             );
         """;
         try (Statement stmt = connection.createStatement()) {
@@ -103,8 +104,8 @@ public static Connection createDatabase(String databaseName) throws SQLException
                 MatchId INTEGER PRIMARY KEY,
                 PlayerId1 INTEGER NOT NULL,
                 PlayerId2 INTEGER NOT NULL,
-                Score CHAR(50) NOT NULL,
                 TournamentId INTEGER NOT NULL,
+                Score CHAR(50) NOT NULL,
                 FOREIGN KEY (PlayerId1) REFERENCES Players(PlayerId),
                 FOREIGN KEY (PlayerId2) REFERENCES Players(PlayerId),
                 FOREIGN KEY (TournamentId) REFERENCES Tournaments(TournamentId)
