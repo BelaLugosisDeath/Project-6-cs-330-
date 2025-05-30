@@ -61,7 +61,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
                 PlayerId INTEGER PRIMARY KEY,
                 FirstName CHAR(50) NOT NULL,
                 LastName CHAR(50) NOT NULL,
-                Place INTEGER NOT NULL,
+                Result INTEGER NOT NULL,
                 DeckId INTEGER NOT NULL,
                 FOREIGN KEY (DeckId) REFERENCES Decks(DeckId)
             );
@@ -102,10 +102,10 @@ public static Connection createDatabase(String databaseName) throws SQLException
         String sqlCommand = """
             CREATE TABLE IF NOT EXISTS Matches (
                 MatchId INTEGER PRIMARY KEY,
+                Score CHAR(50) NOT NULL,
                 PlayerId1 INTEGER NOT NULL,
                 PlayerId2 INTEGER NOT NULL,
                 TournamentId INTEGER NOT NULL,
-                Score CHAR(50) NOT NULL,
                 FOREIGN KEY (PlayerId1) REFERENCES Players(PlayerId),
                 FOREIGN KEY (PlayerId2) REFERENCES Players(PlayerId),
                 FOREIGN KEY (TournamentId) REFERENCES Tournaments(TournamentId)
@@ -163,102 +163,153 @@ public static Connection createDatabase(String databaseName) throws SQLException
             stmt.execute(sqlCommand);
         }
     }
-    public static void insertRecordInDepartmentsTable(int departmentsId, String name, Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO Departments (DepartmentsId, Name) VALUES (?, ?)";
+    public static void insertRecordInPlayersTable(int playerId, String firstName, String lastName, int result, int deckId, Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO Players (PlayerId, FirstName, LastName, Result, DeckId) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
 
-        preparedStatement.setInt(1, departmentsId);
-        preparedStatement.setString(2, name);
-
-        preparedStatement.executeUpdate();
-    }
-    public static void insertRecordInInstructorsTable(int instructorId, int departmentId, String firstName, String lastName,  Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO Instructors (InstructorId, DepartmentsId, FirstName, LastName) VALUES (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-
-        preparedStatement.setInt(1, instructorId);
-        preparedStatement.setInt(2, departmentId);
-        preparedStatement.setString(3, firstName);
-        preparedStatement.setString(4, lastName);
-
-
-        preparedStatement.executeUpdate();
-    }
-
-    public static void insertRecordInStudentsTable(int studentId, String firstName, String lastName, Date birthDate, Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO Students (StudentId, FirstName, LastName, Birthdate) VALUES (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-
-        preparedStatement.setInt(1, studentId);
+        preparedStatement.setInt(1, playerId);
         preparedStatement.setString(2, firstName);
         preparedStatement.setString(3, lastName);
-        preparedStatement.setDate(4, birthDate);
+        preparedStatement.setInt(4, result);
+        preparedStatement.setInt(5, deckId);
+
+        preparedStatement.executeUpdate();
+    }
+    public static void insertRecordInDecksTable(int deckId, int percentOfMetagame, String archetype,  Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO Decks (DeckId, PercentOfMetagame, Archetype) VALUES (?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, deckId);
+        preparedStatement.setInt(2, percentOfMetagame);
+        preparedStatement.setString(3, archetype);
+
 
         preparedStatement.executeUpdate();
     }
 
-    public static void insertRecordInClassesTable(int classId, int instructorId, String title, String subject, int number, int credits, String term, Time time, Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO Classes (ClassId, InstructorId, Title, Subject, Number, Credits, Term, Time) VALUES (?, ?, ?, ?, ? ,? ,?, ?)";
+    public static void insertRecordInCardsTable(int cardId, String name, int manaValue, String color, zConnection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO Students (CardId, Name, Color, ManaValue) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
 
-        preparedStatement.setInt(1, classId);
-        preparedStatement.setInt(2, instructorId);
-        preparedStatement.setString(3, title);
-        preparedStatement.setString(4,subject);
-        preparedStatement.setInt(5, number);
-        preparedStatement.setInt(6, credits);
-        preparedStatement.setString(7, term);
-        preparedStatement.setTime(8, time);
-
-        preparedStatement.executeUpdate();
-    }
-    public static void insertRecordInStudentsToClassesTable(int studentId, int classId, Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO StudentsToClasses (StudentId, ClassId) VALUES (?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-
-        preparedStatement.setInt(1, studentId);
-        preparedStatement.setInt(2, classId);
+        preparedStatement.setInt(1, cardId);
+        preparedStatement.setString(2, name);
+        preparedStatement.setInt(3, manaValue);
+        preparedStatement.setString(4, color);
 
         preparedStatement.executeUpdate();
     }
 
-    public static ResultSet selectRecordsFromDepartmentsTable(Connection connection) 	throws SQLException{
-        String sqlCommand = "SELECT * FROM Departments";
+    public static void insertRecordInMatchesTable(int matchId, String score, int playerId1, int playerId2, int tournamentId, Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO Matches (MatchId, Score, PlayerId1, PlayerId2, TournamentId) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, matchId);
+        preparedStatement.setString(2, score);
+        preparedStatement.setInt(3, playerId1);
+        preparedStatement.setInt(4,playerId2);
+        preparedStatement.setInt(5, tournamentId);
+
+        preparedStatement.executeUpdate();
+    }
+    public static void insertRecordInTournamentsTable(int tournamentId, String name, String location, Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO Tournaments (TournamentId, Name, Location) VALUES (?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, tournamentId);
+        preparedStatement.setString(2, name);
+        preparedStatement.setString(3, location);
+        preparedStatement.executeUpdate();
+    }
+    public static void insertRecordInPlayersToTournamentsTable(int playerId, int tournamentId, Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO PlayersToTournaments (PlayerId, TournamentId) VALUES (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, playerId);
+        preparedStatement.setInt(2, tournamentId);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static void insertRecordInPlayersToMatchesTable(int playerId,int matchId, Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO PlayersToMatches (PlayerId, MatchId) VALUES (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, playerId);
+        preparedStatement.setInt(2, matchId);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static void insertRecordInDecksToCardsTable(int deckId, int cardId, Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO StudentsToClasses (DeckId, CardId) VALUES (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, deckId);
+        preparedStatement.setInt(2, cardId);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static ResultSet selectRecordsFromPlayersTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM Players";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromInstructorsTable(Connection connection) 	throws SQLException{
-        String sqlCommand = "SELECT * FROM Instructors";
+    public static ResultSet selectRecordsFromDecksTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM Decks";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
 
-    public static ResultSet selectRecordsFromStudentsTable(Connection connection) 	throws SQLException{
-        String sqlCommand = "SELECT * FROM Students";
+    public static ResultSet selectRecordsFromCardsTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM Cards";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
 
-    public static ResultSet selectRecordsFromClassesTable(Connection connection) 	throws SQLException{
-        String sqlCommand = "SELECT * FROM Classes";
+    public static ResultSet selectRecordsFromTournamentsTable(Connection 	connection) throws SQLException{
+        String sqlCommand = "SELECT * FROM Tournaments";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromStudentsToClassesTable(Connection 	connection) throws SQLException{
-        String sqlCommand = "SELECT * FROM StudentsToClasses";
+    public static ResultSet selectRecordsFromMatchesTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM Matches";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
+    public static ResultSet selectRecordsFromPlayersToTournamentsTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM PlayersToTournaments";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+
+    public static ResultSet selectRecordsFromPlayersToMatchesTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM PlayersToMatches";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+
+    public static ResultSet selectRecordsFromDecksToCardsTable(Connection connection) 	throws SQLException{
+        String sqlCommand = "SELECT * FROM DecksToCards";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+
+    //TODO: Replace functions below with new ones related to the tournament data schema
+    /*
     public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Table(int 	studentId, Connection connection) throws SQLException{
         String sqlCommand = """
                     SELECT * FROM Students
@@ -332,6 +383,6 @@ public static Connection createDatabase(String databaseName) throws SQLException
         preparedStatement.setInt(1, studentId);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
-    }
+    }*/
 
 }
