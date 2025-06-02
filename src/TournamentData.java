@@ -7,7 +7,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
     //Connection strings.
     String url = "jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false";
     String userId = "root";
-    String password = "??????????";
+    String password = "8679";
 
     //Connect to the database server.
     Connection con = DriverManager.getConnection(url, userId, password);
@@ -25,7 +25,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
         Connection con = null;
         String url = "jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false";
         String userId = "root";
-        String password = "??????????";
+        String password = "8679";
 
         if (enforceForeignKeyConstraint)
         {
@@ -76,7 +76,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
             CREATE TABLE IF NOT EXISTS Decks (
                 DeckId INTEGER PRIMARY KEY,
                 PercentOfMetagame INTEGER NOT NULL,
-                Archetype CHAR(50) NOT NULL,
+                Archetype CHAR(50) NOT NULL
             );
         """;
         try (Statement stmt = connection.createStatement()) {
@@ -121,7 +121,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
                 CREATE TABLE IF NOT EXISTS Tournaments (
                     TournamentId INTEGER PRIMARY KEY,
                     Name CHAR(50) NOT NULL,
-                    Location CHAR(50) NOT NULL,
+                    Location CHAR(50) NOT NULL
                 );
                 """;
         try (Statement stmt = connection.createStatement()) {
@@ -156,7 +156,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
                 DeckId INTEGER NOT NULL,
                 CardId INTEGER NOT NULL,
                 FOREIGN KEY (DeckId) REFERENCES Decks(DeckId),
-                FOREIGN KEY (CardId) REFERENCES Classes(CardId)
+                FOREIGN KEY (CardId) REFERENCES Cards(CardId)
             );
         """;
         try (Statement stmt = connection.createStatement()) {
@@ -187,7 +187,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
         preparedStatement.executeUpdate();
     }
 
-    public static void insertRecordInCardsTable(int cardId, String name, int manaValue, String color, zConnection connection) throws SQLException {
+    public static void insertRecordInCardsTable(int cardId, String name, int manaValue, String color, Connection connection) throws SQLException {
         String sqlCommand = "INSERT INTO Students (CardId, Name, Color, ManaValue) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
 
@@ -309,38 +309,42 @@ public static Connection createDatabase(String databaseName) throws SQLException
     }
 
     //TODO: Replace functions below with new ones related to the tournament data schema
-    /*
-    public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Table(int 	studentId, Connection connection) throws SQLException{
+
+    public static ResultSet selectRecordsFrom_Players_Deck_Table(int 	playerId, Connection connection) throws SQLException{
         String sqlCommand = """
-                    SELECT * FROM Students
-                    JOIN StudentsToClasses ON Students.StudentId=StudentsToClasses.StudentId
-                    WHERE Students.StudentId = (?)
+                    SELECT * FROM Players
+                    JOIN Decks ON Players.DeckId=Decks.DeckId
+                    WHERE Players.PlayerId = (?)
                     """;
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, studentId);
+        preparedStatement.setInt(1, playerId);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
-    public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Table(int studentId, 	Connection connection) throws SQLException{
+    public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table(int playerId, 	Connection connection) throws SQLException{
         String sqlCommand = """
-            SELECT * FROM Students
-            JOIN StudentsToClasses ON Students.StudentId = StudentsToClasses.StudentId
-            JOIN Classes on StudentsToClasses.ClassId = Classes.ClassId
-            WHERE StudentsToClasses.StudentId = (?)
+            SELECT * FROM Players
+            JOIN Decks ON Players.PlayerId = Decks.PlayerId
+            JOIN DecksToCards on Decks.DeckId = DecksToCards.DeckId
+            JOIN Cards on DecksToCards.CardID = Cards.CardId
+            WHERE Players.PlayerId = (?)
             """;
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, studentId);
+        preparedStatement.setInt(1, playerId);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Instructors_Table(int 	studentId, Connection connection) throws SQLException{
+    public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table_Limited(int 	studentId, Connection connection) throws SQLException{
         String sqlCommand = """
-                SELECT * FROM Students
-                JOIN StudentsToClasses ON Students.StudentId = StudentsToClasses.StudentId
-                JOIN Classes on StudentsToClasses.ClassId = Classes.ClassId
-                JOIN Instructors on Classes.InstructorId = Instructors.InstructorId
-                WHERE Students.StudentId = (?)
+                SELECT Players.FirstName, Players.LastName,
+                    Decks.Name AS DeckName,
+                    Cards.Name AS CardName,
+                FROM Players
+                JOIN Decks ON Players.PlayerId = Decks.PlayerId
+                JOIN DecksToCards on Decks.DeckId = DecksToCards.DeckId
+                JOIN Cards on DecksToCards.CardID = Cards.CardId
+                WHERE Players.StudentId = (?)
                """;
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         preparedStatement.setInt(1, studentId);
@@ -348,7 +352,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Table_Limited(int 	studentId, Connection connection) throws SQLException{
+    /*public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Table_Limited(int 	studentId, Connection connection) throws SQLException{
         String sqlCommand = """
             SELECT Students.FirstName, Students.LastName,
                 Classes.Title AS ClassesTitle,

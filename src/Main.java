@@ -12,22 +12,28 @@ public class Main {
     public static void main(String[] args) {
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
         DateFormat df2 = new SimpleDateFormat("hh:mm a");
-        try (Connection connection = TournamentData.createDatabase("LogicCollege")) {
-           //connection.createStatement().execute("PRAGMA foreign_keys = ON");
+        try (Connection connection = TournamentData.createDatabase("TournamentData")) {
+            //connection.createStatement().execute("PRAGMA foreign_keys = ON");
 
             // Drop tables in proper order
-            TournamentData.dropTable("StudentsToClasses",connection);
-            TournamentData.dropTable("Students",connection);
-            TournamentData.dropTable("Classes",connection);
-            TournamentData.dropTable("Instructors",connection);
-            TournamentData.dropTable("Departments",connection);
+            TournamentData.dropTable("PlayersToMatches", connection);
+            TournamentData.dropTable("Matches", connection);
+            TournamentData.dropTable("PlayersToTournaments", connection);
+            TournamentData.dropTable("Tournaments", connection);
+            TournamentData.dropTable("Players", connection);
+            TournamentData.dropTable("DecksToCards", connection);
+            TournamentData.dropTable("Cards", connection);
+            TournamentData.dropTable("Decks", connection);
 
             // Create tables
-            TournamentData.createDepartmentsTable(connection);
-            TournamentData.createInstructorsTable(connection);
-            TournamentData.createStudentsTable(connection);
-            TournamentData.createClassesTable(connection);
-            TournamentData.createStudentsToClassesTable(connection);
+            TournamentData.createDecksTable(connection);
+            TournamentData.createCardsTable(connection);
+            TournamentData.createDecksToCardsTable(connection);
+            TournamentData.createPlayersTable(connection);
+            TournamentData.createTournamentsTable(connection);
+            TournamentData.createPlayersToTournamentsTable(connection);
+            TournamentData.createMatchesTable(connection);
+            TournamentData.createPlayersToMatchesTable(connection);
 
             // Insert data
             insertDepartments(connection);
@@ -36,7 +42,7 @@ public class Main {
             insertClasses(connection);
             insertStudentsToClasses(connection);
 
-            System.out.print("Enter S to search for a record, Q to quit: ");
+            /*System.out.print("Enter S to search for a record, Q to quit: ");
             Scanner keyboard = new Scanner(System.in);
             String response = keyboard.nextLine();
 
@@ -124,18 +130,18 @@ public class Main {
                                     String columnValue = set.getString(index);
                                     System.out.print(columnValue +  " ");
                                 }
-                            }*/
+                            }
                         }
                     }
                 else System.out.println("Input error...");
                 System.out.println();
                 System.out.print("\nEnter S to search for a record, Q to quit: ");
                 response = keyboard.nextLine();
-            }
+            }*/
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        //} catch (ParseException e) {
+        //    throw new RuntimeException(e);
         }
     }
     public static void insertInstructor(Connection connection){
@@ -203,7 +209,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     public static void outputResultSet(ResultSet resultSet) throws SQLException
     {
         while (resultSet.next())
