@@ -75,8 +75,8 @@ public static Connection createDatabase(String databaseName) throws SQLException
         String sqlCommand = """
             CREATE TABLE IF NOT EXISTS Decks (
                 DeckId INTEGER PRIMARY KEY,
-                PercentOfMetagame INTEGER NOT NULL,
-                Archetype CHAR(50) NOT NULL
+                Archetype CHAR(50) NOT NULL,
+                PercentOfMetagame FLOAT NOT NULL
             );
         """;
         try (Statement stmt = connection.createStatement()) {
@@ -138,6 +138,9 @@ public static Connection createDatabase(String databaseName) throws SQLException
                     FOREIGN KEY (TournamentId) REFERENCES Tournaments(TournamentId)
                 );
                 """;
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(sqlCommand);
+        }
     }
 
     public static void createPlayersToMatchesTable (Connection connection) throws SQLException {
@@ -148,6 +151,9 @@ public static Connection createDatabase(String databaseName) throws SQLException
                     FOREIGN KEY (PlayerId) REFERENCES Players(PlayerId),
                     FOREIGN KEY (MatchId) REFERENCES Matches(MatchId)
                 );""";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(sqlCommand);
+        }
     }
 
     public static void createDecksToCardsTable(Connection connection) throws SQLException {
@@ -175,26 +181,25 @@ public static Connection createDatabase(String databaseName) throws SQLException
 
         preparedStatement.executeUpdate();
     }
-    public static void insertRecordInDecksTable(int deckId, int percentOfMetagame, String archetype,  Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO Decks (DeckId, PercentOfMetagame, Archetype) VALUES (?, ?, ?)";
+    public static void insertRecordInDecksTable(int deckId, float percentOfMetagame, String archetype,  Connection connection) throws SQLException {
+        String sqlCommand = "INSERT INTO Decks (DeckId, Archetype, PercentOfMetagame) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
 
         preparedStatement.setInt(1, deckId);
-        preparedStatement.setInt(2, percentOfMetagame);
-        preparedStatement.setString(3, archetype);
-
+        preparedStatement.setString(2, archetype);
+        preparedStatement.setFloat(3, percentOfMetagame);
 
         preparedStatement.executeUpdate();
     }
 
     public static void insertRecordInCardsTable(int cardId, String name, int manaValue, String color, Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO Students (CardId, Name, Color, ManaValue) VALUES (?, ?, ?, ?)";
+        String sqlCommand = "INSERT INTO Cards (CardId, Name, Color, ManaValue) VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
 
         preparedStatement.setInt(1, cardId);
         preparedStatement.setString(2, name);
-        preparedStatement.setInt(3, manaValue);
-        preparedStatement.setString(4, color);
+        preparedStatement.setString(3, color);
+        preparedStatement.setInt(4, manaValue);
 
         preparedStatement.executeUpdate();
     }
@@ -241,7 +246,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
     }
 
     public static void insertRecordInDecksToCardsTable(int deckId, int cardId, Connection connection) throws SQLException {
-        String sqlCommand = "INSERT INTO StudentsToClasses (DeckId, CardId) VALUES (?, ?)";
+        String sqlCommand = "INSERT INTO DecksToCards (DeckId, CardId) VALUES (?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
 
         preparedStatement.setInt(1, deckId);
@@ -324,7 +329,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
     public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table(int playerId, 	Connection connection) throws SQLException{
         String sqlCommand = """
             SELECT * FROM Players
-            JOIN Decks ON Players.PlayerId = Decks.PlayerId
+            JOIN Decks ON Players.DeckId = Decks.DeckId
             JOIN DecksToCards on Decks.DeckId = DecksToCards.DeckId
             JOIN Cards on DecksToCards.CardID = Cards.CardId
             WHERE Players.PlayerId = (?)
@@ -339,9 +344,9 @@ public static Connection createDatabase(String databaseName) throws SQLException
         String sqlCommand = """
                 SELECT Players.FirstName, Players.LastName,
                     Decks.Name AS DeckName,
-                    Cards.Name AS CardName,
+                    Cards.Name AS CardName
                 FROM Players
-                JOIN Decks ON Players.PlayerId = Decks.PlayerId
+                JOIN Decks ON Players.DeckId = Decks.DeckId
                 JOIN DecksToCards on Decks.DeckId = DecksToCards.DeckId
                 JOIN Cards on DecksToCards.CardID = Cards.CardId
                 WHERE Players.StudentId = (?)

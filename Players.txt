@@ -1,0 +1,16 @@
+1, Linden, Koot, 1, 10
+2, James, Turner, 2, 20
+3, Jayson, Babin, 3, 30
+4, Mohamad, Qadi, 4, 20
+5, Patrick, Gemmel, 5, 40
+6, Sebastien, Lachance, 6, 50
+7, Noe, Offman, 7, 20
+8, Felix, Ardea, 8, 20
+9, Quinn, Tonole, 1, 50
+10, Jacob, Milchman, 2, 60
+11, Valkyrie, Westcott, 3, 20
+12, Austin, Snide, 4, 20
+13, Jeff, Timlin, 5, 30
+14, Damion, Mims, 6, 10
+15, Ben, Ulmer, 7, 20
+16, Alexander, Grosshans, 8, 20

@@ -1,0 +1,6 @@
+10, Omniscience Combo, 125
+20, Izzet Prowess, 5
+30, Dimir Aggro, 125
+40, Jeskai Eidetic Memory, 0625
+50, Red Deck Wins, 125
+60, Orzhov Midrange, 0625

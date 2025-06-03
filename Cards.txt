@@ -1,0 +1,12 @@
+100, Omniscience, 10, Blue
+101, Stock Up, 3, Blue
+102, Monstrous Rage, 1, Red
+103, Monastery Swiftspear, 1, Red
+104, Cori-Steel Cutter, 2, Red
+105, Go for the Throat, 2, Black
+106, Deep-Cavern Bat, 2, Black
+107, Proft's Eidetic Memory, 2, Blue
+108, Abhorrent Oculus, 3, Blue
+109, Torch the Toweri, 1, Red
+110, Magebane Lizard, 2, Red
+111, Pest Control, 2, White-Black

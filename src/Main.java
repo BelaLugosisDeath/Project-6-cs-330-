@@ -36,13 +36,13 @@ public class Main {
             TournamentData.createPlayersToMatchesTable(connection);
 
             // Insert data
-            
-            insertPlayers(connection);
+
             insertDecks(connection);
             insertCards(connection);
-            insertMatches(connection);
-            insertTournaments(connection);
             insertDecksToCards(connection);
+            insertPlayers(connection);
+            insertTournaments(connection);
+            insertMatches(connection);
             insertPlayersToMatches(connection);
             insertPlayersToTournaments(connection);
             
@@ -142,7 +142,7 @@ public class Main {
                 System.out.print("\nEnter S to search for a record, Q to quit: ");
                 response = s.nextLine();
             }*/
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             e.printStackTrace();
         //} catch (ParseException e) {
         //    throw new RuntimeException(e);
@@ -153,7 +153,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(", ");
                 TournamentData.insertRecordInPlayersTable(Integer.parseInt(values[0]), values[1],values[2], Integer.parseInt(values[3]), Integer.parseInt(values[4]), connection);
             }
         } catch (IOException | SQLException e) {
@@ -165,8 +165,8 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                TournamentData.insertRecordInDecksTable(Integer.parseInt(values[0]), values[1], values[2], Double.parseDouble(values[3]), connection);
+                String[] values = line.split(", ");
+                TournamentData.insertRecordInDecksTable(Integer.parseInt(values[0]), Float.parseFloat(values[2]), values[1], connection);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
@@ -177,8 +177,8 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                TournamentData.insertRecordInClassesTable(Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]), values[3]);
+                String[] values = line.split(", ");
+                TournamentData.insertRecordInCardsTable(Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]), values[3], connection);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
@@ -189,7 +189,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(", ");
                 TournamentData.insertRecordInMatchesTable(Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]), Integer.parseInt(values[3]), Integer.parseInt(values[4]), connection);
             }
         } catch (IOException | SQLException e) {
@@ -201,7 +201,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(", ");
                 TournamentData.insertRecordInTournamentsTable(Integer.parseInt(values[0]), values[1], values[2], connection);
             }
         } catch (IOException | SQLException e) {
@@ -213,7 +213,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(", ");
                 TournamentData.insertRecordInPlayersToTournamentsTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
             }
         } catch (IOException | SQLException e) {
@@ -226,7 +226,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(", ");
                 TournamentData.insertRecordInPlayersToMatchesTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
             }
         } catch (IOException | SQLException e) {
@@ -239,7 +239,7 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(", ");
                 TournamentData.insertRecordInDecksToCardsTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
             }
         } catch (IOException | SQLException e) {
