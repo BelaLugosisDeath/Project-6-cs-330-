@@ -43,19 +43,19 @@ public class Main {
             insertStudentsToClasses(connection);
 
             /*System.out.print("Enter S to search for a record, Q to quit: ");
-            Scanner keyboard = new Scanner(System.in);
-            String response = keyboard.nextLine();
+            Scanner s = new Scanner(System.in);
+            String response = s.nextLine();
 
             while(!response.equals("Q"))
             {
                 if (response.equals("S"))
                 {
-                    System.out.print("Enter 1-Department, 2-Instructor, 3-Student, 4-Classes, 5-Student Classes: ");
-                    String table = keyboard.nextLine();
+                    System.out.print("Enter 1-Players, 2-Decks, 3-Cards, 4-Matches, 5-Tournaments, 6-Decks Cards, 7-Players Matches, 8-Players Tournaments: ");
+                    String table = s.nextLine();
                     if(table.equals("1")){
-                        System.out.print("Department ID: ");
-                        String ID = keyboard.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFromDepartmentsTable(connection);
+                        System.out.print("Player ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFromPlayersTable(connection);
                         while(set.next()){
                             if(set.getInt(1) == Integer.parseInt(ID)){
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
@@ -69,9 +69,9 @@ public class Main {
                         }
                     }
                     if(table.equals("2")){
-                        System.out.print("Instructor ID: ");
-                        String ID = keyboard.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFromInstructorsTable(connection);
+                        System.out.print("Deck ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFromDecksTable(connection);
                         while(set.next()){
                             if(set.getInt(1) == Integer.parseInt(ID)){
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
@@ -85,9 +85,9 @@ public class Main {
                         }
                     }
                     if(table.equals("3")){
-                        System.out.print("Student ID: ");
-                        String ID = keyboard.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFromStudentsTable(connection);
+                        System.out.print("Card ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFromCardsTable(connection);
                         while(set.next()){
                             if(set.getInt(1) == Integer.parseInt(ID)){
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
@@ -101,9 +101,9 @@ public class Main {
                         }
                     }
                     if(table.equals("4")){
-                        System.out.print("Classes ID: ");
-                        String ID = keyboard.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFromClassesTable(connection);
+                        System.out.print("Match ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFromMatchesTable(connection);
                         while(set.next()){
                             if(set.getInt(1) == Integer.parseInt(ID)){
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
@@ -117,11 +117,11 @@ public class Main {
                         }
                     }
                     if(table.equals("5")){
-                        System.out.print("Students ID: ");
-                        String ID = keyboard.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFrom_Students_StudentsToClasses_Classes_Table_Limited(Integer.parseInt(ID), connection);
+                        System.out.print("Tournament ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFromTournamentsTable(connection);
                         outputResultSet(set);
-                        /*while(set.next()){
+                        while(set.next()){
                             if(set.getInt(1) == Integer.parseInt(ID)){
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
@@ -136,7 +136,7 @@ public class Main {
                 else System.out.println("Input error...");
                 System.out.println();
                 System.out.print("\nEnter S to search for a record, Q to quit: ");
-                response = keyboard.nextLine();
+                response = s.nextLine();
             }*/
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,66 +144,61 @@ public class Main {
         //    throw new RuntimeException(e);
         }
     }
-    public static void insertInstructor(Connection connection){
-        String filePath = "InstructorRecords.txt"; // Path to your CSV file
+    public static void insertPlayers(Connection connection){
+        String filePath = "Players.txt"; // Path to your CSV file
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                TournamentData.insertRecordInInstructorsTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]),values[2], values[3], connection);
+                TournamentData.insertRecordInPlayersTable(Integer.parseInt(values[0]), values[1],values[2], Integer.parseInt(values[3]), Integer.parseInt(values[4]), connection);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void insertStudents(Connection connection) throws ParseException {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        String filePath = "StudentRecords.txt"; // Path to your CSV file
+    public static void insertDecks(Connection connection) throws ParseException {
+        String filePath = "Decks.txt"; // Path to your CSV file
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                java.sql.Date sqlDate = new java.sql.Date(df.parse(values[3]).getTime());
-                TournamentData.insertRecordInStudentsTable(Integer.parseInt(values[0]), values[1], values[2], sqlDate, connection);
+                TournamentData.insertRecordInDecksTable(Integer.parseInt(values[0]), values[1], values[2], Double.parseDouble(values[3]), connection);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void insertClasses(Connection connection) throws ParseException {
-        DateFormat df = new SimpleDateFormat("hh:mm");
-        String filePath = "ClassesRecords.txt"; // Path to your CSV file
+    public static void insertCards(Connection connection) throws ParseException {
+        String filePath = "Cards.txt"; // Path to your CSV file
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                java.sql.Time sqlDate = new java.sql.Time(df.parse(values[7]).getTime());
-                TournamentData.insertRecordInClassesTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]),
-                        values[2], values[3], Integer.parseInt(values[4]), Integer.parseInt(values[5]), values[6], sqlDate, connection);
+                TournamentData.insertRecordInClassesTable(Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]), values[3]);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void insertStudentsToClasses(Connection connection){
-        String filePath = "StudentsToClassesRecords.txt"; // Path to your CSV file
+    public static void insertMatches(Connection connection){
+        String filePath = "Matches.txt"; // Path to your CSV file
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                TournamentData.insertRecordInStudentsToClassesTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
+                TournamentData.insertRecordInMatchesTable(Integer.parseInt(values[0]), values[1], Integer.parseInt(values[2]), Integer.parseInt(values[3]), Integer.parseInt(values[4]), connection);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void insertDepartments(Connection connection){
-        String filePath = "DepartmentRecords.txt"; // Path to your CSV file
+    public static void insertTournaments(Connection connection){
+        String filePath = "Tournaments.txt"; // Path to your CSV file
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] values = line.split(",");
-                TournamentData.insertRecordInDepartmentsTable(Integer.parseInt(values[0]), values[1], connection);
+                TournamentData.insertRecordInTournamentsTable(Integer.parseInt(values[0]), values[1], values[2], connection);
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
