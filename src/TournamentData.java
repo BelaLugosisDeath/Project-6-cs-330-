@@ -169,6 +169,69 @@ public static Connection createDatabase(String databaseName) throws SQLException
             stmt.execute(sqlCommand);
         }
     }
+
+    public static void deleteRecordInDecksTable(int deckId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM Decks WHERE DeckId = (DeckId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, deckId);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static void deleteRecordInCardsTable(int cardId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM Cards WHERE CardId = (CardId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, cardId);
+
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static void deleteRecordInMatchesTable(int matchId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM Matches WHERE MatchId = (MatchId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, matchId);
+
+        preparedStatement.executeUpdate();
+    }
+    public static void deleteRecordInTournamentsTable(int tournamentId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM Tournaments WHERE TournamentId = (TournamentId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, tournamentId);
+
+        preparedStatement.executeUpdate();
+    }
+    public static void deleteRecordInPlayersToTournamentsTable(int playerId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM PlayersToTournaments WHERE PlayerId = (PlayerId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, playerId);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static void deleteRecordInPlayersToMatchesTable(int playerId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM PlayersToMatches WHERE PlayerId = (PlayerId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, playerId);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public static void deleteRecordInDecksToCardsTable(int deckId, int cardId, Connection connection) throws SQLException {
+        String sqlCommand = "DELETE FROM DecksToCards WHERE DeckId = (DeckId) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+
+        preparedStatement.setInt(1, deckId);
+
+        preparedStatement.executeUpdate();
+    }
+
     public static void insertRecordInPlayersTable(int playerId, String firstName, String lastName, int result, int deckId, Connection connection) throws SQLException {
         String sqlCommand = "INSERT INTO Players (PlayerId, FirstName, LastName, Result, DeckId) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
@@ -181,6 +244,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
 
         preparedStatement.executeUpdate();
     }
+
     public static void insertRecordInDecksTable(int deckId, float percentOfMetagame, String archetype,  Connection connection) throws SQLException {
         String sqlCommand = "INSERT INTO Decks (DeckId, Archetype, PercentOfMetagame) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
@@ -254,7 +318,6 @@ public static Connection createDatabase(String databaseName) throws SQLException
 
         preparedStatement.executeUpdate();
     }
-
     public static ResultSet selectRecordsFromPlayersTable(Connection connection) 	throws SQLException{
         String sqlCommand = "SELECT * FROM Players";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
@@ -356,7 +419,20 @@ public static Connection createDatabase(String databaseName) throws SQLException
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
+    public static void createViews(Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
 
+        stmt.execute("CREATE VIEW ViewPlayers AS SELECT * FROM Players");
+        stmt.execute("CREATE VIEW ViewDecks AS SELECT * FROM Decks");
+        stmt.execute("CREATE VIEW ViewCards AS SELECT * FROM Cards");
+        stmt.execute("CREATE VIEW ViewMatches AS SELECT * FROM Matches");
+        stmt.execute("CREATE VIEW ViewTournaments AS SELECT * FROM Tournaments");
+        stmt.execute("CREATE VIEW ViewPlayersToTournaments AS SELECT * FROM PlayersToTournaments");
+        stmt.execute("CREATE VIEW ViewPlayersToMatches AS SELECT * FROM PlayersToMatches");
+        stmt.execute("CREATE VIEW ViewDecksToCards AS SELECT * FROM DecksToCards");
+
+        stmt.close();
+    }
     /*public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Table_Limited(int 	studentId, Connection connection) throws SQLException{
         String sqlCommand = """
             SELECT Students.FirstName, Students.LastName,

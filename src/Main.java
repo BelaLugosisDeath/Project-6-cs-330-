@@ -45,7 +45,9 @@ public class Main {
             insertMatches(connection);
             insertPlayersToMatches(connection);
             insertPlayersToTournaments(connection);
-            
+
+            // create views
+            TournamentData.createViews(connection);
             /*System.out.print("Enter S to search for a record, Q to quit: ");
             Scanner s = new Scanner(System.in);
             String response = s.nextLine();
