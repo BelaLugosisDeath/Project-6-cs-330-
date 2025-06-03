@@ -36,12 +36,16 @@ public class Main {
             TournamentData.createPlayersToMatchesTable(connection);
 
             // Insert data
-            insertDepartments(connection);
-            insertInstructor(connection);
-            insertStudents(connection);
-            insertClasses(connection);
-            insertStudentsToClasses(connection);
-
+            
+            insertPlayers(connection);
+            insertDecks(connection);
+            insertCards(connection);
+            insertMatches(connection);
+            insertTournaments(connection);
+            insertDecksToCards(connection);
+            insertPlayersToMatches(connection);
+            insertPlayersToTournaments(connection);
+            
             /*System.out.print("Enter S to search for a record, Q to quit: ");
             Scanner s = new Scanner(System.in);
             String response = s.nextLine();
@@ -204,6 +208,45 @@ public class Main {
             e.printStackTrace();
         }
     }
+    public static void insertPlayersToTournaments(Connection connection){
+        String filePath = "PlayersToTournaments.txt"; // Path to your CSV file
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                TournamentData.insertRecordInPlayersToTournamentsTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void insertPlayersToMatches(Connection connection){
+        String filePath = "PlayersToMatches.txt"; // Path to your CSV file
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                TournamentData.insertRecordInPlayersToMatchesTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+     public static void insertDecksToCards(Connection connection){
+        String filePath = "DecksToCards.txt"; // Path to your CSV file
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                TournamentData.insertRecordInDecksToCardsTable(Integer.parseInt(values[0]), Integer.parseInt(values[1]), connection);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void outputResultSet(ResultSet resultSet) throws SQLException
     {
         while (resultSet.next())
