@@ -447,10 +447,18 @@ public static Connection createDatabase(String databaseName) throws SQLException
         return resultSet;
     }
 
-
-
-
-
+     public static ResultSet selectRecordsFrom_Players_PlayersToTournaments_Tournaments_Table(int playerId, Connection connection) throws SQLException{
+        String sqlCommand = """
+                    SELECT * FROM Players
+                    JOIN PlayersToTournaments ON Players.PlayerId = PlayersToTournaments.PlayerId
+                    JOIN Tournaments ON PlayersToTournaments.TournamentId = Tournaments.TournamentId
+                    WHERE Players.PlayerId = (?)
+                    """;
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, playerId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
     
     public static void createViews(Connection connection) throws SQLException {
         Statement stmt = connection.createStatement();
