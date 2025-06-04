@@ -420,13 +420,13 @@ public static Connection createDatabase(String databaseName) throws SQLException
     public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table_Limited(int playerId, Connection connection) throws SQLException{
         String sqlCommand = """
                 SELECT Players.FirstName, Players.LastName,
-                    Decks.Name AS DeckName,
+                    Decks.Archetype AS DeckName,
                     Cards.Name AS CardName
                 FROM Players
                 JOIN Decks ON Players.DeckId = Decks.DeckId
                 JOIN DecksToCards on Decks.DeckId = DecksToCards.DeckId
                 JOIN Cards on DecksToCards.CardID = Cards.CardId
-                WHERE Players.StudentId = (?)
+                WHERE Players.PlayerId = (?)
                """;
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         preparedStatement.setInt(1, playerId);
@@ -447,9 +447,39 @@ public static Connection createDatabase(String databaseName) throws SQLException
         return resultSet;
     }
 
+    public static ResultSet selectRecordsFrom_Players_PlayersToMatches_Matches_Table_Limited(int playerId, Connection connection) throws SQLException{
+        String sqlCommand = """
+            SELECT Players.FirstName, Players.LastName,
+             Matches.Score AS MatchScore
+            FROM Players
+            JOIN PlayersToMatches ON Players.PlayerId = PlayersToMatches.PlayerId
+            JOIN Matches on Matches.MatchId = PlayersToMatches.MatchId
+            WHERE Players.PlayerId = (?)
+            """;
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, playerId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+
      public static ResultSet selectRecordsFrom_Players_PlayersToTournaments_Tournaments_Table(int playerId, Connection connection) throws SQLException{
         String sqlCommand = """
                     SELECT * FROM Players
+                    JOIN PlayersToTournaments ON Players.PlayerId = PlayersToTournaments.PlayerId
+                    JOIN Tournaments ON PlayersToTournaments.TournamentId = Tournaments.TournamentId
+                    WHERE Players.PlayerId = (?)
+                    """;
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, playerId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+
+    public static ResultSet selectRecordsFrom_Players_PlayersToTournaments_Tournaments_Table_Limited(int playerId, Connection connection) throws SQLException{
+        String sqlCommand = """
+                    SELECT Players.FirstName, Players.LastName,
+                     Tournaments.Name AS TournamentName
+                     FROM Players
                     JOIN PlayersToTournaments ON Players.PlayerId = PlayersToTournaments.PlayerId
                     JOIN Tournaments ON PlayersToTournaments.TournamentId = Tournaments.TournamentId
                     WHERE Players.PlayerId = (?)

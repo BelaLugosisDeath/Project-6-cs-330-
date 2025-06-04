@@ -153,7 +153,7 @@ public class Main {
                     else if (table.equals("7")) {
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToMatches_Matches_Table(Integer.parseInt(ID), connection);
+                        ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToMatches_Matches_Table_Limited(Integer.parseInt(ID), connection);
                         outputResultSet(set);
                         while (set.next()) {
                             if (set.getInt(1) == Integer.parseInt(ID)) {
@@ -169,7 +169,7 @@ public class Main {
                     else if (table.equals("8")) {
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
-                        ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToTournaments_Tournaments_Table(Integer.parseInt(ID), connection);
+                        ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToTournaments_Tournaments_Table_Limited(Integer.parseInt(ID), connection);
                         outputResultSet(set);
                         while (set.next()) {
                             if (set.getInt(1) == Integer.parseInt(ID)) {
