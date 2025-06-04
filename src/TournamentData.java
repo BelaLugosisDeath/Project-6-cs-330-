@@ -318,14 +318,14 @@ public static Connection createDatabase(String databaseName) throws SQLException
 
         preparedStatement.executeUpdate();
     }
-    public static ResultSet selectRecordsFromPlayersTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromPlayersTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM Players";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromDecksTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromDecksTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM Decks";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -333,7 +333,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
     }
 
 
-    public static ResultSet selectRecordsFromCardsTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromCardsTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM Cards";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -341,35 +341,35 @@ public static Connection createDatabase(String databaseName) throws SQLException
     }
 
 
-    public static ResultSet selectRecordsFromTournamentsTable(Connection 	connection) throws SQLException{
+    public static ResultSet selectRecordsFromTournamentsTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM Tournaments";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromMatchesTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromMatchesTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM Matches";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromPlayersToTournamentsTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromPlayersToTournamentsTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM PlayersToTournaments";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromPlayersToMatchesTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromPlayersToMatchesTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM PlayersToMatches";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFromDecksToCardsTable(Connection connection) 	throws SQLException{
+    public static ResultSet selectRecordsFromDecksToCardsTable(Connection connection) throws SQLException{
         String sqlCommand = "SELECT * FROM DecksToCards";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -378,7 +378,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
 
     //TODO: Replace functions below with new ones related to the tournament data schema
 
-    public static ResultSet selectRecordsFrom_Players_Deck_Table(int 	playerId, Connection connection) throws SQLException{
+    public static ResultSet selectRecordsFrom_Players_Deck_Table(int playerId, Connection connection) throws SQLException{
         String sqlCommand = """
                     SELECT * FROM Players
                     JOIN Decks ON Players.DeckId=Decks.DeckId
@@ -389,7 +389,21 @@ public static Connection createDatabase(String databaseName) throws SQLException
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
-    public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table(int playerId, 	Connection connection) throws SQLException{
+
+    public static ResultSet selectRecordsFrom_Decks_DecksToCards_Cards_Table(int deckID, Connection connection) throws SQLException{
+        String sqlCommand = """
+                    SELECT * FROM Decks
+                    JOIN DecksToCards ON Decks.DeckId=DecksToCards.DeckId
+                    JOIN Cards ON Cards.CardId = DecksToCards.CardId
+                    WHERE Decks.DeckId = (?)
+                    """;
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, deckId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+    
+    public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table(int playerId, Connection connection) throws SQLException{
         String sqlCommand = """
             SELECT * FROM Players
             JOIN Decks ON Players.DeckId = Decks.DeckId
@@ -403,7 +417,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
         return resultSet;
     }
 
-    public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table_Limited(int 	studentId, Connection connection) throws SQLException{
+    public static ResultSet selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table_Limited(int playerId, Connection connection) throws SQLException{
         String sqlCommand = """
                 SELECT Players.FirstName, Players.LastName,
                     Decks.Name AS DeckName,
@@ -415,10 +429,29 @@ public static Connection createDatabase(String databaseName) throws SQLException
                 WHERE Players.StudentId = (?)
                """;
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, studentId);
+        preparedStatement.setInt(1, playerId);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
+    
+    public static ResultSet selectRecordsFrom_Players_PlayersToMatches_Matches_Table(int playerId, Connection connection) throws SQLException{
+        String sqlCommand = """
+            SELECT * FROM Players
+            JOIN PlayersToMatches ON Players.PlayerId = PlayersToMatches.PlayerId
+            JOIN Matches on Matches.MatchId = PlayersToMatches.MatchId
+            WHERE Players.PlayerId = (?)
+            """;
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+        preparedStatement.setInt(1, playerId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
+    }
+
+
+
+
+
+    
     public static void createViews(Connection connection) throws SQLException {
         Statement stmt = connection.createStatement();
 
