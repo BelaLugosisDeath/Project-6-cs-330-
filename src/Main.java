@@ -24,6 +24,7 @@ public class Main {
             TournamentData.dropTable("DecksToCards", connection);
             TournamentData.dropTable("Cards", connection);
             TournamentData.dropTable("Decks", connection);
+            TournamentData.dropViews(connection);
 
             // Create tables
             TournamentData.createDecksTable(connection);
@@ -48,158 +49,151 @@ public class Main {
 
             // create views
             TournamentData.createViews(connection);
-            
+
             System.out.print("Enter S to search for a record, Q to quit: ");
             Scanner s = new Scanner(System.in);
             String response = s.nextLine();
 
-            while(!response.equals("Q"))
-            {
-                if (response.equals("S"))
-                {
+            while (!response.equals("Q")) {
+                if (response.equals("S")) {
                     System.out.print("Enter 1-Players, 2-Decks, 3-Cards, 4-Matches, 5-Tournaments, 6-Players Decks Cards, 7-Players Matches, 8-Players Tournaments: ");
                     String table = s.nextLine();
-                    if(table.equals("1")){
+                    if (table.equals("1")) {
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFromPlayersTable(connection);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("2")){
+                    else if (table.equals("2")) {
                         System.out.print("Deck ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFromDecksTable(connection);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("3")){
+                    else if (table.equals("3")) {
                         System.out.print("Card ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFromCardsTable(connection);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("4")){
+                    else if (table.equals("4")) {
                         System.out.print("Match ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFromMatchesTable(connection);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("5")){
+                    else if (table.equals("5")) {
                         System.out.print("Tournament ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFromTournamentsTable(connection);
                         outputResultSet(set);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("6")){
+                    else if (table.equals("6")) {
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFrom_Players_Decks_DecksToCards_Cards_Table_Limited(Integer.parseInt(ID), connection);
                         outputResultSet(set);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("7")){
+                    else if (table.equals("7")) {
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToMatches_Matches_Table(Integer.parseInt(ID), connection);
                         outputResultSet(set);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
                     }
-                    if(table.equals("8")){
+                    else if (table.equals("8")) {
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToTournaments_Tournaments_Table(Integer.parseInt(ID), connection);
                         outputResultSet(set);
-                        while(set.next()){
-                            if(set.getInt(1) == Integer.parseInt(ID)){
+                        while (set.next()) {
+                            if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
                                 int columnCount = resultSetMetaData.getColumnCount();
-                                for (int index = 1; index <= columnCount; index++)
-                                {
+                                for (int index = 1; index <= columnCount; index++) {
                                     String columnValue = set.getString(index);
-                                    System.out.print(columnValue +  " ");
+                                    System.out.print(columnValue + " ");
                                 }
                             }
                         }
+                    } else {
+                        System.out.println("Input error...");
                     }
-                else System.out.println("Input error...");
-                System.out.println();
-                System.out.print("\nEnter S to search for a record, Q to quit: ");
-                response = s.nextLine();
-            }
-        } catch (SQLException | ParseException e) {
-            e.printStackTrace();
-        //} catch (ParseException e) {
-        //    throw new RuntimeException(e);
+                    System.out.println();
+                    System.out.print("\nEnter S to search for a record, Q to quit: ");
+                    response = s.nextLine();
+                }
+                }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
     public static void insertPlayers(Connection connection){

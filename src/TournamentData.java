@@ -7,7 +7,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
     //Connection strings.
     String url = "jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false";
     String userId = "root";
-    String password = "8679";
+    String password = "";
 
     //Connect to the database server.
     Connection con = DriverManager.getConnection(url, userId, password);
@@ -398,7 +398,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
                     WHERE Decks.DeckId = (?)
                     """;
         PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, deckId);
+        preparedStatement.setInt(1, deckID);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet;
     }
@@ -471,6 +471,21 @@ public static Connection createDatabase(String databaseName) throws SQLException
         stmt.execute("CREATE VIEW ViewPlayersToTournaments AS SELECT * FROM PlayersToTournaments");
         stmt.execute("CREATE VIEW ViewPlayersToMatches AS SELECT * FROM PlayersToMatches");
         stmt.execute("CREATE VIEW ViewDecksToCards AS SELECT * FROM DecksToCards");
+
+        stmt.close();
+    }
+
+    public static void dropViews(Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
+
+        stmt.execute("DROP VIEW IF EXISTS ViewPlayers");
+        stmt.execute("DROP VIEW IF EXISTS ViewDecks");
+        stmt.execute("DROP VIEW IF EXISTS ViewCards");
+        stmt.execute("DROP VIEW IF EXISTS ViewMatches");
+        stmt.execute("DROP VIEW IF EXISTS ViewTournaments");
+        stmt.execute("DROP VIEW IF EXISTS ViewPlayersToTournaments");
+        stmt.execute("DROP VIEW IF EXISTS ViewPlayersToMatches");
+        stmt.execute("DROP VIEW IF EXISTS ViewDecksToCards");
 
         stmt.close();
     }
