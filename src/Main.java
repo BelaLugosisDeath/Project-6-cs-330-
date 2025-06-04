@@ -139,6 +139,40 @@ public class Main {
                             }
                         }
                     }
+                    if(table.equals("6")){
+                        System.out.print("Deck ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFrom_Decks_DecksToCards_Cards_Table(Integer.parseInt(ID), connection);
+                        outputResultSet(set);
+                        while(set.next()){
+                            if(set.getInt(1) == Integer.parseInt(ID)){
+                                ResultSetMetaData resultSetMetaData = set.getMetaData();
+                                int columnCount = resultSetMetaData.getColumnCount();
+                                for (int index = 1; index <= columnCount; index++)
+                                {
+                                    String columnValue = set.getString(index);
+                                    System.out.print(columnValue +  " ");
+                                }
+                            }
+                        }
+                    }
+                    if(table.equals("7")){
+                        System.out.print("Player ID: ");
+                        String ID = s.nextLine();
+                        ResultSet set = TournamentData.selectRecordsFrom_Players_PlayersToMatches_Matches_Table(Integer.parseInt(ID), connection);
+                        outputResultSet(set);
+                        while(set.next()){
+                            if(set.getInt(1) == Integer.parseInt(ID)){
+                                ResultSetMetaData resultSetMetaData = set.getMetaData();
+                                int columnCount = resultSetMetaData.getColumnCount();
+                                for (int index = 1; index <= columnCount; index++)
+                                {
+                                    String columnValue = set.getString(index);
+                                    System.out.print(columnValue +  " ");
+                                }
+                            }
+                        }
+                    }
                 else System.out.println("Input error...");
                 System.out.println();
                 System.out.print("\nEnter S to search for a record, Q to quit: ");
