@@ -122,7 +122,7 @@ public class Main {
                         System.out.print("Tournament ID: ");
                         String ID = s.nextLine();
                         ResultSet set = TournamentData.selectRecordsFromTournamentsTable(connection);
-                        outputResultSet(set);
+                        //outputResultSet(set);
                         while (set.next()) {
                             if (set.getInt(1) == Integer.parseInt(ID)) {
                                 ResultSetMetaData resultSetMetaData = set.getMetaData();
