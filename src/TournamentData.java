@@ -7,7 +7,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
     //Connection strings.
     String url = "jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false";
     String userId = "root";
-    String password = "";
+    String password = "8679";
 
     //Connect to the database server.
     Connection con = DriverManager.getConnection(url, userId, password);
@@ -25,7 +25,7 @@ public static Connection createDatabase(String databaseName) throws SQLException
         Connection con = null;
         String url = "jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false";
         String userId = "root";
-        String password = "8679";
+        String password = "";
 
         if (enforceForeignKeyConstraint)
         {
@@ -519,41 +519,131 @@ public static Connection createDatabase(String databaseName) throws SQLException
 
         stmt.close();
     }
-    /*public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Table_Limited(int 	studentId, Connection connection) throws SQLException{
+
+    public static void createTriggers (Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
         String sqlCommand = """
-            SELECT Students.FirstName, Students.LastName,
-                Classes.Title AS ClassesTitle,
-                Classes.Subject AS ClassesSubject,
-                Classes.Number AS ClassesNumber
-            FROM Students
-            JOIN StudentsToClasses ON Students.StudentId = StudentsToClasses.StudentId
-            JOIN Classes ON StudentsToClasses.ClassId = Classes.ClassId
-            WHERE StudentsToClasses.StudentId = (?)
-            """;
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, studentId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet;
+            CREATE TRIGGER PreventNegativeResult
+            BEFORE INSERT ON Players
+            FOR EACH ROW
+            BEGIN
+                IF NEW.Result < 0 THEN
+                    SIGNAL SQLSTATE '45000' 
+                        SET MESSAGE_TEXT = 'Result cannot be negative';
+                END IF;
+            END;
+        """;
+        stmt.execute(sqlCommand);
+
+        sqlCommand = """
+            CREATE TRIGGER PreventIncorrectPercent
+                BEFORE INSERT ON Decks
+                FOR EACH ROW
+                BEGIN
+                    IF NEW.PercentOfMetagame > 1 THEN
+                        SIGNAL SQLSTATE '45000' 
+                            SET MESSAGE_TEXT = 'Percent of Meta Game cannot be greater than 1';
+                END IF;
+            END;
+        """;
+        stmt.execute(sqlCommand);
+
+        sqlCommand = """
+            CREATE TRIGGER PreventIncorrectPercent2
+                BEFORE INSERT ON Decks
+                FOR EACH ROW
+                BEGIN
+                    IF NEW.PercentOfMetagame < 0 THEN
+                        SIGNAL SQLSTATE '45000' 
+                            SET MESSAGE_TEXT = 'Percent of Meta Game cannot be less than 0';
+                END IF;
+            END;
+        """;
+        stmt.execute(sqlCommand);
+
+        sqlCommand = """
+            CREATE TRIGGER PreventDeleteFromDecksToCards
+            BEFORE DELETE ON DecksToCards
+            FOR EACH ROW
+            BEGIN
+                IF EXISTS (
+                    SELECT 1
+                    FROM Players
+                    WHERE DeckId = OLD.DeckId
+                ) THEN
+                    SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'Cannot delete from DecksToCards: DeckId is still used in Players table.';
+                END IF;
+        
+                IF EXISTS (
+                    SELECT 1
+                    FROM Cards
+                    WHERE CardId = OLD.CardId
+                ) THEN
+                    SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'Cannot delete from DecksToCards: CardId is still used in Cards table.';
+                END IF;
+            END;
+        """;
+        stmt.execute(sqlCommand);
+        stmt.close();
     }
 
-    public static ResultSet selectRecordsFrom_Students_StudentsToClasses_Classes_Instructors_Table_Limited(	int studentId, Connection connection) throws SQLException{
-        String sqlCommand = """
-            SELECT Students.FirstName, Students.LastName,
-                Classes.Title AS ClassesTitle,
-                Classes.Subject AS ClassesSubject,
-                Classes.Number AS ClassesNumber,
-                Instructors.FirstName AS InstructorsFirstName,
-                Instructors.LastName AS InstructorsLastName
-            FROM Students
-            JOIN StudentsToClasses ON Students.StudentId = StudentsToClasses.StudentId
-            JOIN Classes ON StudentsToClasses.ClassId = Classes.ClassId
-            JOIN Instructors ON Classes.InstructorID = Instructors.InstructorID
-            WHERE StudentsToClasses.StudentId = (?)
-            """;
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
-        preparedStatement.setInt(1, studentId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet;
-    }*/
+    public static void dropTriggers (Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.execute("DROP TRIGGER IF EXISTS PreventNegativeResult;");
+        stmt.execute("DROP TRIGGER IF EXISTS PreventIncorrectPercent;");
+        stmt.execute("DROP TRIGGER IF EXISTS PreventIncorrectPercent2;");
+        stmt.execute("DROP TRIGGER IF EXISTS PreventDeleteFromDecksToCards;");
+        stmt.close();
+    }
 
+    public static void createProcedures (Connection connection)throws SQLException {
+        Statement stmt = connection.createStatement();
+        String sqlCommand = """
+                CREATE PROCEDURE fetchIdDecks()
+                BEGIN
+                SELECT DeckId FROM Decks;
+                END;
+                """;
+        stmt.execute(sqlCommand);
+        sqlCommand = """
+                CREATE PROCEDURE fetchIdPlayers()
+                BEGIN
+                SELECT PlayerId FROM Players ORDER BY PlayerId ASC;
+                END
+                ;""";
+        stmt.execute(sqlCommand);
+        sqlCommand = """
+                CREATE PROCEDURE fetchIdCards()
+                BEGIN
+                SELECT CardId FROM Cards;
+                END
+                ;""";
+        stmt.execute(sqlCommand);
+
+        sqlCommand = """
+                CREATE PROCEDURE fetchIdTournaments()
+                BEGIN
+                SELECT TournamentId FROM Tournaments;
+                END
+                ;""";
+        stmt.execute(sqlCommand);
+
+        sqlCommand = """
+                CREATE PROCEDURE fetchIdMatches()
+                BEGIN
+                SELECT MatchId FROM Matches;
+                END;
+                """;
+        stmt.execute(sqlCommand);
+    }
+    public static void dropProcedures(Connection connection) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.execute("DROP PROCEDURE IF EXISTS fetchIdDecks");
+        stmt.execute("DROP PROCEDURE IF EXISTS fetchIdPlayers");
+        stmt.execute("DROP PROCEDURE IF EXISTS fetchIdCards");
+        stmt.execute("DROP PROCEDURE IF EXISTS fetchIdTournaments");
+        stmt.execute("DROP PROCEDURE IF EXISTS fetchIdMatches");
+    }
 }
