@@ -81,6 +81,7 @@ public class Main {
                                 }
                             }
                         }
+                        System.out.println();
                     } else if(table.equals("2")){
                         System.out.print("Deck ID: ");
                         String ID = s.nextLine();
@@ -96,6 +97,7 @@ public class Main {
                                 }
                             }
                         }
+                        System.out.println();
                     } else if(table.equals("3")){
                         System.out.print("Card ID: ");
                         String ID = s.nextLine();
@@ -111,6 +113,7 @@ public class Main {
                                 }
                             }
                         }
+                        System.out.println();
                     } else if(table.equals("4")){
                         System.out.print("Match ID: ");
                         String ID = s.nextLine();
@@ -126,6 +129,7 @@ public class Main {
                                 }
                             }
                         }
+                        System.out.println();
                     } else if(table.equals("5")){
                         System.out.print("Tournament ID: ");
                         String ID = s.nextLine();
@@ -141,6 +145,7 @@ public class Main {
                                 }
                             }
                         }
+                        System.out.println();
                     } else if(table.equals("6")){
                         System.out.print("Player ID: ");
                         String ID = s.nextLine();
